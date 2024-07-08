@@ -4,10 +4,11 @@ class SongList {
     //获取歌单的详情主页
     getSongListDetail = async (ctx, next) => {
         const { id } = ctx.request.body
+        console.log("geddddd", id)
         if (!id) return ctx.body = { code: 2400, data: '歌单id不能为空~' }
         const res = await txRequest.get({
             url: 'http://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg',
-            data: {
+            params: {
                 type: 1,
                 utf8: 1,
                 disstid: id, // 歌单的id
@@ -214,6 +215,76 @@ class SongList {
         console.log("*-------------", res)
         ctx.body = { code: 200, data: res }
     }
+
+    //获取为你推荐的歌单
+    getRecommendUSongList = async (ctx, next) => {
+        const res = await txRequest.get({
+            url: 'http://u.y.qq.com/cgi-bin/musicu.fcg',
+            params: {
+                data: JSON.stringify({
+                    comm: {
+                        ct: 24
+                    },
+                    recomPlaylist: {
+                        method: "get_hot_recommend",
+                        param: {
+                            async: 1,
+                            cmd: 2
+                        },
+                        module: "playlist.HotRecommendServer"
+                    }
+                })
+            },
+        });
+        ctx.body = { code: 200, data: res }
+    }
+    //按分类推荐歌单 分类id，默认为 3317 // 3317: 官方歌单，59：经典，71：情歌，3056：网络歌曲，64：KTV热歌
+    getRecommendSongList = async (ctx, next) => {
+        let { pageSize = 20, pageNo = 1, id = 3317 } = ctx.request.body;
+        const res = await txRequest.get({
+            url: 'http://u.y.qq.com/cgi-bin/musicu.fcg',
+            params: {
+                data: JSON.stringify({
+                    comm: {
+                        ct: 24
+                    },
+                    playlist: {
+                        method: "get_playlist_by_category",
+                        param: {
+                            id: id / 1,
+                            curPage: pageNo / 1,
+                            size: pageSize / 1,
+                            order: 5,
+                            titleid: id / 1,
+                        },
+                        module: "playlist.PlayListPlazaServer"
+                    }
+                }),
+            },
+        });
+        ctx.body = { code: 200, data: res }
+    }
+    //日推歌单
+    getDailyRecommendSongList = async (ctx, next) => {
+        const res = await txRequest.get({
+            url: 'https://c.y.qq.com/node/musicmac/v6/index.html',
+        });
+        let result = res.match(/<a href="javascript:;" data-type=".+?" data-rid=".+?" >今日私享<\/a>/g)
+        if (result.length == 0) return ctx.body = { code: 2400, data: '出错了~' }
+        let idList = result[0].match(/data-rid="([^"]+)"/)
+        if (idList.length == 0) return ctx.body = { code: 2400, data: '出错了~' }
+        ctx.request.body.id = idList[1]
+        return this.getSongListDetail(ctx, next)
+    }
+
+    //日推的轮播图
+    getDailyBanner = async (ctx, next) => {
+        const res = await txRequest.get({
+            url: 'https://c.y.qq.com/node/musicmac/v6/index.html',
+        });
+        //和日推的处理差不多
+    }
+
 }
 
 module.exports = new SongList()

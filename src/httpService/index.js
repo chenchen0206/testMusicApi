@@ -19,8 +19,8 @@ const txRequest = new HYRequest({
       return err;
     },
     responseInterceptor: (res) => {
-      console.log("响应拦截1", res.data, typeof res.data === 'string')
-      if (typeof res.data === 'string' && res.data.includes('jsonCallback')) {
+      console.log("响应拦截1", res.data)
+      if (typeof res.data === 'string' && res.data.includes('Callback')) {
         res.data = res.data.replace(/callback\(|MusicJsonCallback\(|jsonCallback\(|\)$/g, '');
         console.log("响应拦截2", res.data)
         return res;

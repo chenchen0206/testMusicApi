@@ -1,11 +1,12 @@
 const KoaRouter = require('@koa/router')
 const { getLeaderboard, getLeaderboardSong } = require('../musicSdk/tx/leaderboard')
-const { getMusicUrl } = require('../musicSdk/tx/music')
+const { getMusicUrl, getSongInfo, getSimilarSong, getRelatedSongList, getRelatedMv, getSongLyric } = require('../musicSdk/tx/music')
 const { setCookie, getCookie, refreshCookie } = require('../musicSdk/tx/login')
 const { getUserHome, getSongList, getCollectSongList, getCollectAlbum, getFollowSingers, setFollowSingers, getFollowUsers, getUserFans } = require('../musicSdk/tx/user')
 const { getSearch, getTrendingSearch, getQuickSearch } = require('../musicSdk/tx/search')
-const { getSongListDetail, getSongListCategory, getCategorySongList, getMySongList, setAddSong, setDeleteSong, setAddSongList, setDeleteSongList, setCollectSongList } = require('../musicSdk/tx/songList')
-
+const { getSongListDetail, getSongListCategory, getCategorySongList, getMySongList, setAddSong,
+    setDeleteSong, setAddSongList, setDeleteSongList, setCollectSongList, getRecommendUSongList, getRecommendSongList,
+    getDailyRecommendSongList } = require('../musicSdk/tx/songList')
 
 const { globalCookieFun, takeCookieFun } = require('../musicSdk/tx/middleware')
 
@@ -16,6 +17,11 @@ txRouter.get('/leaderboard', getLeaderboard)
 txRouter.post('/leaderboard/getSong', getLeaderboardSong)
 
 txRouter.post('/music/getUrl', getMusicUrl)
+txRouter.post('/music/getSongInfo', getSongInfo)
+txRouter.post('/music/getSimilarSong', getSimilarSong)
+txRouter.post('/music/getRelatedSongList', getRelatedSongList)
+txRouter.post('/music/getRelatedMv', getRelatedMv)
+txRouter.post('/music/getSongLyric', getSongLyric)
 
 txRouter.post('/login/setCookie', globalCookieFun, setCookie)
 txRouter.post('/login/getCookie', globalCookieFun, getCookie)
@@ -43,6 +49,10 @@ txRouter.post('/songlist/deleteSong', setDeleteSong)
 txRouter.post('/songlist/addSongList', setAddSongList)
 txRouter.post('/songlist/deleteSongList', setDeleteSongList)
 txRouter.post('/songlist/collectSongList', setCollectSongList)
+txRouter.post('/songlist/getRecommendUSongList', getRecommendUSongList)
+txRouter.post('/songlist/getRecommendSongList', getRecommendSongList)
+txRouter.post('/songlist/getDailyRecommendSongList', getDailyRecommendSongList)
+
 
 
 
