@@ -1,8 +1,5 @@
 const txRequest = require("../../httpService/index");
 class Search {
-    constructor() {
-
-    }
     //全局搜索
     getSearch = async (ctx, next) => {
         let {
@@ -10,7 +7,6 @@ class Search {
             pageSize = 20,
             key,
             t = 0, // 0：单曲，2：歌单，7：歌词，8：专辑，9：歌手，12：mv
-            raw,
         } = ctx.request.body;
         if (!key) return ctx.body = { code: 2400, data: '关键词不能为空~' }
 
