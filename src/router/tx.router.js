@@ -12,6 +12,7 @@ const { singerIntroduce, singerHotSong, singerAlbum, singerMv, singerSimilarity,
 const { albumIntroduce, albumSongList } = require('../musicSdk/tx/album')
 const { radioCategory } = require('../musicSdk/tx/radio')
 const { mvInfo, mvUrl, mvCategory, mvCategoryToList, mvLike } = require('../musicSdk/tx/mv')
+const { commentNewAndHot, commentSend, commentDelete, commentLike } = require('../musicSdk/tx/comment')
 
 const { globalCookieFun, takeCookieFun } = require('../musicSdk/tx/middleware')
 
@@ -81,5 +82,10 @@ txRouter.post('/mv/url', mvUrl)
 txRouter.post('/mv/category', mvCategory)
 txRouter.post('/mv/categoryToList', mvCategoryToList)
 txRouter.post('/mv/like', mvLike)
+
+txRouter.post('/comment/newAndHot', commentNewAndHot)
+txRouter.post('/comment/send', commentSend)
+txRouter.post('/comment/delete', commentDelete)
+txRouter.post('/comment/like', commentLike)
 
 module.exports = txRouter

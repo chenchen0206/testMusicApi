@@ -2,9 +2,6 @@ const txRequest = require("../../httpService/index");
 const { changeUrlQuery } = require('./utils/StringHelper');
 const Base64 = require('js-base64');
 class Music {
-    constructor() {
-
-    }
     //获取音乐播放的URL
     getMusicUrl = async (ctx, next) => {
         const { songId } = ctx.request.body
@@ -46,6 +43,106 @@ class Music {
         });
         ctx.body = { code: 200, data: data }
     }
+
+    //（不可用）获取歌曲的下载链接
+    // id: songmid
+    // type: 默认 128 // 128：mp3 128k，320：mp3 320k，m4a：m4a格式 128k，flac：flac格式 无损，ape：ape格式 无损
+    // mediaId: 这个字段为其他接口中返回的 strMediaId 字段，可不传，不传默认同 songmid，但是部分歌曲不传可能会出现能获取到链接，但实际404， 所以有条件的大家都传吧
+    // isRedirect: 默认 0，非 0 时直接重定向到播放链接
+    // 这个接口跟上个接口一样，也是依赖服务器的 Cookie 信息的，不支持批量获取，不一定是全部的歌曲都有无损、高品的， 要注意结合 size320，sizeape，sizeflac 等参数先判断下是否有播放链接
+    musicDownloadUrl = async (ctx, next) => {
+        const { id, type = '128', mediaId, isRedirect = '0' } = ctx.request.body
+        if (!id || !mediaId) return ctx.app.emit('error', 2003, ctx)
+        const { cookie } = ctx.request.header
+        if (!cookie) return ctx.app.emit('error', 2004, ctx)
+        const typeMap = {
+            m4a: {
+                s: 'C400',
+                e: '.m4a',
+            },
+            128: {
+                s: 'M500',
+                e: '.mp3',
+            },
+            320: {
+                s: 'M800',
+                e: '.mp3',
+            },
+            ape: {
+                s: 'A000',
+                e: '.ape',
+            },
+            flac: {
+                s: 'F000',
+                e: '.flac',
+            },
+        };
+        const typeObj = typeMap[type];
+        if (!typeObj) return ctx.body = { code: 2400, data: 'type传错了~' }
+        const file = `${typeObj.s}${id}${mediaId}${typeObj.e}`;
+        const guid = (Math.random() * 10000000).toFixed(0);
+        let uin = ctx.cookies.get('uin')
+        let qqmusic_key = ctx.cookies.get('qqmusic_key')
+        let purl = '';
+        let count = 0;
+        let domain = '';
+        while (!purl && count < 10) {
+            count += 1;
+            const result = await txRequest.get({
+                url: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
+                data: {
+                    '-': 'getplaysongvkey',
+                    g_tk: 5381,
+                    loginUin: uin,
+                    hostUin: 0,
+                    format: 'json',
+                    inCharset: 'utf8',
+                    outCharset: 'utf-8¬ice=0',
+                    platform: 'yqq.json',
+                    needNewCode: 0,
+                    data: JSON.stringify({
+                        req_0: {
+                            module: 'vkey.GetVkeyServer',
+                            method: 'CgiGetVkey',
+                            param: {
+                                filename: [file],
+                                guid: guid,
+                                songmid: [id],
+                                songtype: [0],
+                                uin: uin,
+                                loginflag: 1,
+                                platform: '20',
+                            },
+                        },
+                        comm: {
+                            uin: uin,
+                            format: 'json',
+                            ct: 19,
+                            cv: 0,
+                            authst: qqmusic_key,
+                        },
+                    }),
+                },
+            });
+            if (!result.req_0.data) {
+                return ctx.body = { code: 2400, data: '获取链接出错，建议检查是否携带 cookie ' }
+            }
+            if (result.req_0 && result.req_0.data && result.req_0.data.midurlinfo) {
+                purl = result.req_0.data.midurlinfo[0].purl;
+            }
+            if (domain === '') {
+                domain =
+                    result.req_0.data.sip.find(i => !i.startsWith('http://ws')) ||
+                    result.req_0.data.sip[0];
+            }
+        }
+        if (!purl) {
+            return ctx.body = { code: 2400, data: '获取播放链接出错' }
+        }
+
+        ctx.body = { code: 200, data: '测试' }
+    }
+
     //获取歌曲信息
     getSongInfo = async (ctx, next) => {
         let { songmid } = ctx.request.body;
