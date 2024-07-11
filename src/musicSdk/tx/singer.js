@@ -1,4 +1,4 @@
-const txRequest = require("../../httpService/index");
+const txRequest = require("../../httpService/txRequest");
 class Singer {
     //获取歌手的一些详细信息介绍
     singerIntroduce = async (ctx, next) => {

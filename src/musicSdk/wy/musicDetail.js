@@ -1,7 +1,7 @@
 // import { httpFetch } from '../../request'
-const txRequest = require("../../httpService/index");
+const txRequest = require("../../httpService/txRequest");
 const { weapi } = require("./utils/crypto");
-// import txRequest from "../../httpService/index";
+// import txRequest from "../../httpService/txRequest";
 // import { weapi } from "./utils/crypto";
 // import { formatPlayTime, sizeFormate } from '../../index'
 // https://github.com/Binaryify/NeteaseCloudMusicApi/blob/master/module/song_detail.js

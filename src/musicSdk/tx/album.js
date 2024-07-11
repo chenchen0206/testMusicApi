@@ -1,4 +1,4 @@
-const txRequest = require("../../httpService/index");
+const txRequest = require("../../httpService/txRequest");
 class Album {
     //(不可用)获取专辑信息
     albumIntroduce = async (ctx, next) => {

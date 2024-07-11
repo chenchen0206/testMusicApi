@@ -1,4 +1,4 @@
-const txRequest = require("../../httpService/index");
+const txRequest = require("../../httpService/txRequest");
 const { isNumeric } = require('../../utils/verify')
 // const moment = require('moment');
 class Leaderboard {

@@ -1,4 +1,4 @@
-const txRequest = require("../../httpService/index");
+const txRequest = require("../../httpService/txRequest");
 class User {
     //获取用户主页信息 mymusic 为喜欢的音乐，mydiss 为用户创建的歌单，需要注意的是，喜欢的音乐中的歌单id为 id，歌单中的歌单id为 dissid
     getUserHome = async (ctx, next) => {

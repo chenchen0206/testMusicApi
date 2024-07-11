@@ -1,4 +1,4 @@
-const txRequest = require("../../httpService/index");
+const txRequest = require("../../httpService/txRequest");
 class Mv {
     //获取MV的信息
     mvInfo = async (ctx, next) => {

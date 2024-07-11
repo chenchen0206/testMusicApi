@@ -1,4 +1,4 @@
-const txRequest = require("../../httpService/index");
+const txRequest = require("../../httpService/txRequest");
 const { changeUrlQuery } = require('./utils/StringHelper');
 class SongList {
     //获取歌单的详情主页

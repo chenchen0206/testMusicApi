@@ -1,4 +1,4 @@
-const txRequest = require("../../httpService/index");
+const txRequest = require("../../httpService/txRequest");
 class Comment {
     //获取评论参数：
     // id: singid, albumid, tid, topid, vid 必填

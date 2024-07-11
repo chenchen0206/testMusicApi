@@ -1,4 +1,4 @@
-const txRequest = require("../../httpService/index");
+const txRequest = require("../../httpService/txRequest");
 class Search {
     //全局搜索
     getSearch = async (ctx, next) => {

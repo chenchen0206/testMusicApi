@@ -1,4 +1,4 @@
-const txRequest = require("../../httpService/index");
+const txRequest = require("../../httpService/txRequest");
 class Radio {
     //获取电台分类 或者 根据分类获取电台歌曲 默认99 => 猜你喜欢
     radioCategory = async (ctx, next) => {
