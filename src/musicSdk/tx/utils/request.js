@@ -1,5 +1,5 @@
-const HYRequest = require("./request");
-const globalData = require("../musicSdk/tx/utils/globalData");
+const HYRequest = require("../../../httpService/index");
+const globalData = require("./globalData");
 // service统一出口
 // import HYRequest from "./request";
 // import { BASE_URL, TIME_OUT } from "./request/config";

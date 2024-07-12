@@ -1,4 +1,4 @@
-const txRequest = require("../../httpService/txRequest");
+const txRequest = require("./utils/request");
 const getSign = require('./utils/sign');
 const globalData = require("./utils/globalData");
 class Login {

@@ -1,4 +1,4 @@
-const txRequest = require("../../httpService/txRequest");
+const txRequest = require("./utils/request");
 const { changeUrlQuery } = require('./utils/StringHelper');
 const Base64 = require('js-base64');
 class Music {

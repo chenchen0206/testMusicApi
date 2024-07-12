@@ -1,4 +1,4 @@
-const HYRequest = require("../../../httpService/request");
+const HYRequest = require("../../../httpService/index");
 const readFileData = require("./readFileData");
 const encrypt = require('./crypto')
 const http = require('http')
