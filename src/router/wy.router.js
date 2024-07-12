@@ -1,13 +1,20 @@
 const KoaRouter = require('@koa/router')
 
-const { loginEmail, setCookie, loginVisitor } = require('../musicSdk/wy/login')
+const { loginEmail, setCookie, loginVisitor, loginQrKey, loginQrCreate, loginQrCheck, loginStatus
+} = require('../musicSdk/wy/login')
 const { userAccount } = require('../musicSdk/wy/user')
 
-const txRouter = new KoaRouter({ prefix: '/wy' })
+const wyRouter = new KoaRouter({ prefix: '/wy' })
 
-txRouter.post('/login/email', loginEmail)
-txRouter.post('/login/setCookie', setCookie)
-txRouter.post('/login/visitor', loginVisitor)
+wyRouter.post('/login/email', loginEmail)
+wyRouter.post('/login/setCookie', setCookie)
+wyRouter.post('/login/visitor', loginVisitor)
+wyRouter.post('/login/qrKey', loginQrKey)
+wyRouter.post('/login/qrCreate', loginQrCreate)
+wyRouter.post('/login/qrCheck', loginQrCheck)
+wyRouter.post('/login/status', loginStatus)
 
-txRouter.post('/user/account', userAccount)
-module.exports = txRouter
+
+
+wyRouter.post('/user/account', userAccount)
+module.exports = wyRouter

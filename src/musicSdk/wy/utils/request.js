@@ -137,7 +137,11 @@ const wyRequest = new HYRequest({
         },
         responseInterceptor: async (res) => {
             console.log("响应拦截1", res)
-            let urlList = ['https://music.163.com/weapi/login', 'https://music.163.com/weapi/register/anonimous']
+            let urlList = [
+                'https://music.163.com/weapi/login',
+                'https://music.163.com/weapi/register/anonimous',
+                'https://music.163.com/weapi/login/qrcode/client/login'
+            ]
             if (urlList.includes(res.config.url)) {
                 res.data.cookies = (res.headers['set-cookie'] || []).map((x) =>
                     x.replace(/\s*Domain=[^(;|$)]+;*/, ''),

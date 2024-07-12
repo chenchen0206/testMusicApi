@@ -2,6 +2,7 @@ const wyRequest = require("./utils/request");
 const readFileData = require("./utils/readFileData");
 const { cookieToJson, generateRandomChineseIP } = require('./utils/index')
 const CryptoJS = require('crypto-js')
+const QRCode = require('qrcode')
 
 class Login {
     #ID_XOR_KEY_1 = '3go8&$8*3*3h0k(2)2'
@@ -106,7 +107,7 @@ class Login {
     //二维码登录的KEY生成
     loginQrKey = async (ctx, next) => {
         const data = {
-            username: encodedId,
+            type: 1,
             options: {
                 crypto: 'weapi',
                 cookie: {},
@@ -119,10 +120,64 @@ class Login {
             url: 'https://music.163.com/weapi/login/qrcode/unikey',
             data
         });
-        this.#setCookies(ctx, res.cookies)
         ctx.body = { code: 200, data: res }
     }
+    //根据KEY生成二维码登录
+    loginQrCreate = async (ctx, next) => {
+        const { key, qrimg = true } = ctx.request.body
+        if (!key) return ctx.body = { code: 2400, data: 'key不能为空~' }
+        const url = `https://music.163.com/login?codekey=${key}`
 
+        ctx.body = {
+            code: 200,
+            data: {
+                qrurl: url,
+                qrimg: qrimg ? await QRCode.toDataURL(url) : '',
+            }
+        }
+    }
+    //检测扫码状态接口 轮询此接口可获取二维码扫码状态,800 为二维码过期,801 为等待扫码,802 为待确认,803 为授权登录成功(803 状态码下会返回 cookies),如扫码后返回502,则需加上noCookie参数,如&noCookie=true
+    loginQrCheck = async (ctx, next) => {
+        const { key } = ctx.request.body
+        if (!key) return ctx.body = { code: 2400, data: 'key不能为空~' }
+        const data = {
+            key,
+            type: 1,
+            options: {
+                crypto: 'weapi',
+                cookie: {},
+                ua: '',
+                proxy: '',
+                realIP: '',
+            }
+        }
+        const res = await wyRequest.post({
+            url: 'https://music.163.com/weapi/login/qrcode/client/login',
+            data
+        });
+        if (res.code == 803) {
+            this.#setCookies(ctx, res.cookies)
+        }
+        ctx.body = { code: 200, data: res }
+    }
+    //获取登录状态
+    loginStatus = async (ctx, next) => {
+        const cookieObj = cookieToJson(ctx.request.header.cookie)
+        const data = {
+            options: {
+                crypto: 'weapi',
+                cookie: cookieObj,
+                ua: '',
+                proxy: '',
+                realIP: '',
+            }
+        }
+        const res = await wyRequest.post({
+            url: 'https://music.163.com/weapi/w/nuser/account/get',
+            data
+        });
+        ctx.body = { code: 200, data: res }
+    }
 }
 
 module.exports = new Login()
