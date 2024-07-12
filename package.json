@@ -9,7 +9,8 @@
   },
   "nodemonConfig": {
     "ignore": [
-      "src/musicSdk/tx/cookieFile/*.json"
+      "src/musicSdk/tx/cookieFile/*.json",
+      "src/musicSdk/wy/storageFile/*.json"
     ]
   },
   "keywords": [],
@@ -19,6 +20,7 @@
     "@koa/multer": "^3.0.2",
     "@koa/router": "^12.0.0",
     "axios": "^1.7.2",
+    "crypto-js": "^4.2.0",
     "dotenv": "^16.0.3",
     "js-base64": "^3.7.7",
     "jsonfile": "^6.1.0",
@@ -27,6 +29,7 @@
     "koa-bodyparser": "^4.3.0",
     "multer": "^1.4.5-lts.1",
     "mysql2": "^2.3.3",
+    "node-forge": "^1.3.1",
     "xml2js": "^0.6.2"
   }
 }
