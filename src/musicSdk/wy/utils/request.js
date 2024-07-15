@@ -93,9 +93,10 @@ const reqInterceptorFun = (config) => {
     } else if (options.crypto === 'eapi') {
         const cookie = options.cookie || {}
         const csrfToken = cookie['__csrf'] || ''
+        const deviceId = readFileData.getDeviceId()
         const header = {
             osver: cookie.osver || '17.4.1', //系统版本
-            deviceId: cookie.deviceId || global.deviceId,
+            deviceId: cookie.deviceId || deviceId,
             appver: cookie.appver || iosAppVersion, // app版本
             versioncode: cookie.versioncode || '140', //版本号
             mobilename: cookie.mobilename || '', //设备model
@@ -111,20 +112,21 @@ const reqInterceptorFun = (config) => {
         if (cookie.MUSIC_U) header['MUSIC_U'] = cookie.MUSIC_U
         if (cookie.MUSIC_A) header['MUSIC_A'] = cookie.MUSIC_A
         headers['Cookie'] = Object.keys(header)
-            .map(
-                (key) =>
-                    encodeURIComponent(key) + '=' + encodeURIComponent(header[key]),
-            )
+            .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(header[key]))
             .join('; ')
-        data.header = header
-        data = encrypt.eapi(options.url, data)
-        url = url.replace(/\w*api/, 'eapi')
+        q.header = header
+        config.data = encrypt.eapi(options.url, q)
+        config.url = config.url.replace(/\w*api/, 'eapi')
     }
 
     config.data = new URLSearchParams(config.data).toString()
     config.headers = headers
     config.httpAgent = new http.Agent({ keepAlive: true })
     config.httpsAgent = new https.Agent({ keepAlive: true })
+    if (options.crypto === 'eapi') {
+        // config.responseType = 'arraybuffer'
+        config.encoding = null
+    }
     console.log("请求拦截3", config)
     return config;
 }

@@ -79,8 +79,7 @@ class Login {
     }
     //获取游客登录的Cookie
     loginVisitor = async (ctx, next) => {
-        let deviceidList = readFileData.getDeviceidText()
-        const deviceId = deviceidList[Math.floor(Math.random() * deviceidList.length)]
+        const deviceId = readFileData.getDeviceId()
         const encodedId = CryptoJS.enc.Base64.stringify(
             CryptoJS.enc.Utf8.parse(
                 `${deviceId} ${this.#cloudmusic_dll_encode_id(deviceId)}`,
@@ -174,6 +173,25 @@ class Login {
         }
         const res = await wyRequest.post({
             url: 'https://music.163.com/weapi/w/nuser/account/get',
+            data
+        });
+        ctx.body = { code: 200, data: res }
+    }
+    //退出登录
+    logout = async (ctx, next) => {
+        const cookieObj = cookieToJson(ctx.request.header.cookie)
+        const data = {
+            options: {
+                crypto: 'weapi',
+                uaType: 'pc',
+                cookie: cookieObj,
+                ua: '',
+                proxy: '',
+                realIP: '',
+            }
+        }
+        const res = await wyRequest.post({
+            url: 'https://music.163.com/weapi/logout',
             data
         });
         ctx.body = { code: 200, data: res }

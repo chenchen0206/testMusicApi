@@ -21,13 +21,14 @@ class ReadFileData {
         this.visitorCookies = cookie
         jsonFile.writeFile(parentDirectoryPath + '/storageFile/visitorCookies.json', this.visitorCookies);
     }
-    getDeviceidText = () => {
+    getDeviceId = () => {
         const deviceidText = fs.readFileSync(
             parentDirectoryPath + '/storageFile/deviceid.txt',
             'utf-8',
         )
         const deviceidList = deviceidText.split('\n')
-        return deviceidList
+        const deviceId = deviceidList[Math.floor(Math.random() * deviceidList.length)]
+        return deviceId
     }
 
 }
